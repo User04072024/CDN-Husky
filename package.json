@@ -1,0 +1,30 @@
+{
+  "name": "cylic-cdn",
+  "version": "2.1.0",
+  "description": "CDN Single Upload (MongoDB Atlas + Vercel ready)",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "NexonCDN"
+  ],
+  "author": "Husky_dev",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cfonts": "^3.2.0",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-rate-limit": "^7.5.0",
+    "express-fileupload": "^1.5.1",
+    "mongodb": "^6.9.0",
+    "nodemailer": "^10.3.1",
+    "serve-favicon": "^2.5.0"
+  }
+}
