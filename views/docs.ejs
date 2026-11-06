@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10132f">
+  <title>API Documentation</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="header__logo">API Documentation</div>
+  </header>
+
+  <main class="main">
+    <section class="section">
+      <h1 class="section__title">Upload File API</h1>
+      <p class="section__description">Endpoint to upload files to the server.</p>
+      <p class="section__description">
+        Temporary API uploads do not require a web login. Permanent uploads require an account API key
+        and active admin-approved permission ($5 USD/month). Website uploads with temporary lifetimes are
+        anonymous; permanent website uploads require an account and active permission.
+      </p>
+
+      <div class="section__endpoint">
+        <h2 class="endpoint__title">Endpoint</h2>
+        <code class="endpoint__code">POST /api/upload</code>
+      </div>
+
+      <div class="section__endpoint">
+        <h2 class="endpoint__title">Upload from URL</h2>
+        <code class="endpoint__code">GET /api/upload/to?url=...&amp;namefile=...&amp;expiresIn=2h</code>
+      </div>
+
+      <div class="section__parameters">
+        <h2 class="parameters__title">Request Body Parameters</h2>
+        <ul class="parameters__list">
+          <li class="parameters__item"><code>file</code>: The file to upload (multipart/form-data).</li>
+          <li class="parameters__item"><code>expiresIn</code>: Optional file lifetime: <code>30m</code>, <code>2h</code>, <code>12h</code>, <code>2d</code>, <code>30d</code>, <code>1y</code>, or <code>never</code>. Defaults to <code>12h</code>. Use <code>never</code> only with an authorized account API key.</li>
+        </ul>
+      </div>
+
+      <div class="section__responses">
+        <h2 class="responses__title">Success Response</h2>
+        <pre class="responses__code"><code>true OK</code></pre>
+        <pre class="responses__body"><code>{
+  "creator": "Husky_dev",
+  "status": true,
+  "message": "File uploaded successfully",
+  "data": {
+    "url": "https://cdn.huskydev.space/filename.ext",
+    "type": "application/pdf",
+    "size": "102.40 KB",
+    "expiresAt": "2026-11-06T01:00:00.000Z"
+  }
+}</code></pre>
+        <p class="section__description">For permanent files, <code>expiresAt</code> is <code>null</code>. The URL upload endpoint accepts the same <code>expiresIn</code> options as a query parameter. Create and manage API keys from your account page; send them using <code>Authorization: Bearer hdev_...</code>.</p>
+      </div>
+
+      <div class="section__errors">
+        <h2 class="errors__title">Error Responses</h2>
+        <p class="section__description">
+          Invalid input returns <code>400</code>; missing or invalid keys return <code>401</code> when permanent
+          storage is requested; inactive permission returns <code>403</code>; and account quota exhaustion returns
+          <code>413</code>. Uploads are limited to 4 MB by default; <code>MAX_FILE_SIZE</code> can change this on
+          supported hosting.
+        </p>
+        <pre class="errors__code"><code>Example · 400 Bad Request</code></pre>
+        <pre class="errors__body"><code>{
+  "status": false,
+  "message": "No file uploaded."
+}</code></pre>
+        <pre class="errors__code"><code>Example · 500 Internal Server Error</code></pre>
+        <pre class="errors__body"><code>{
+  "status": false,
+  "message": "Error uploading file."
+}</code></pre>
+      </div>
+
+      <div class="section__example">
+        <h2 class="example__title">Example Usage with JavaScript</h2>
+        <div class="code-container">
+          <button class="copy-btn" onclick="copyCode()">Copy</button>
+          <pre><code class="language-javascript">import fs from 'fs'
+import FormData from 'form-data'
+import axios from 'axios'
+
+// Upload file dari path lokal
+const uploadFile = async (filePath) => {
+  const formData = new FormData()
+  formData.append('file', fs.createReadStream(filePath))
+  formData.append('expiresIn', '2h')
+
+  try {
+    const response = await axios.post('https://cdn.huskydev.space/api/upload', formData, {
+      headers: formData.getHeaders()
+    })
+    console.log('Upload berhasil:', response.data)
+  } catch (error) {
+    console.error('UploadFile Error:', error.message)
+  }
+}
+
+// Upload file from a public URL
+const uploadFromUrl = async (sourceUrl, namefile, expiresIn = '12h') => {
+  try {
+    const params = new URLSearchParams({ url: sourceUrl, namefile, expiresIn })
+    const url = \`https://cdn.huskydev.space/api/upload/to?\${params}\`
+    const response = await axios.get(url, {
+      headers: { Authorization: \`Bearer \${process.env.HUSKY_CDN_API_KEY}\` }
+    })
+    console.log('Upload berhasil:', response.data)
+  } catch (error) {
+    console.error('UploadFromUrl Error:', error.message)
+  }
+}
+
+// Contoh penggunaan
+uploadFile('./tmp/example.pdf')
+uploadFromUrl('https://example.com/image.jpg', 'image', '30d')</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p class="footer__text">© 2026 Husky_dev CDN. All rights reserved. | by <a href="https://github.com/Husky_dev" class="footer__link">Husky_dev</a></p>
+  </footer>
+
+  <script>
+    function copyCode() {
+      const codeBlock = document.querySelector('.section__example code').innerText
+      navigator.clipboard.writeText(codeBlock).then(() => {
+        const btn = document.querySelector('.copy-btn')
+        btn.textContent = 'Copied!'
+        setTimeout(() => btn.textContent = 'Copy', 2000)
+      })
+    }
+  </script>
+</body>
+</html>
