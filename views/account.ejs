@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10132f">
+  <title>My account | Husky_dev CDN</title>
+  <link rel="stylesheet" href="/assets/css/style2.css">
+</head>
+<body>
+  <main class="upload-area account-area">
+    <div class="account-heading">
+      <div>
+        <h1>My account</h1>
+        <p class="account-status"><%= user.email %></p>
+      </div>
+      <a class="account-link" href="/">Upload files</a>
+    </div>
+
+    <% if (error) { %><p class="form-message form-message--error"><%= error %></p><% } %>
+    <% if (paymentRequested) { %><p class="form-message">Your payment request is pending admin review.</p><% } %>
+    <% if (newApiKey) { %>
+      <div class="api-key-notice">
+        <strong>Copy your API key now. It will not be shown again.</strong>
+        <code><%= newApiKey %></code>
+      </div>
+    <% } %>
+
+    <section class="account-section">
+      <h2>Permanent storage · $5 USD/month</h2>
+      <% if (canUploadPermanent) { %>
+        <p class="account-status">Permission active until <%= user.paidUntil.toISOString() %>.</p>
+      <% } else { %>
+        <p class="account-status">
+          Permanent uploads cost $5 USD per month and require admin approval after manual payment.
+          Existing permanent files remain available if permission expires.
+        </p>
+        <% if (paymentInstructions) { %>
+          <p class="form-message"><%= paymentInstructions %></p>
+        <% } else { %>
+          <p class="account-status">Request access here; contact the administrator for payment instructions.</p>
+        <% } %>
+        <% if (!paymentRequest) { %>
+          <form action="/account/request-permanent" method="post">
+            <button type="submit">Request $5 monthly access</button>
+          </form>
+        <% } else { %>
+          <p class="form-message">Payment request submitted on <%= paymentRequest.createdAt.toISOString() %>.</p>
+        <% } %>
+      <% } %>
+      <p class="account-status">
+        Storage: <%= (user.storageBytes / (1024 * 1024 * 1024)).toFixed(2) %> GB of 100 GB
+      </p>
+    </section>
+
+    <section class="account-section">
+      <h2>API access</h2>
+      <% if (user.apiKeyPrefix) { %>
+        <p class="account-status">Active key: <code><%= user.apiKeyPrefix %>…</code>. Temporary uploads can be anonymous; permanent API uploads require this key and active permission.</p>
+        <form action="/account/api-key/revoke" method="post">
+          <button type="submit">Revoke API key</button>
+        </form>
+      <% } else { %>
+        <p class="account-status">Generate a key to associate API uploads with this account. Keep it private.</p>
+      <% } %>
+      <form action="/account/api-key" method="post">
+        <button type="submit"><%= user.apiKeyPrefix ? 'Rotate API key' : 'Generate API key' %></button>
+      </form>
+    </section>
+
+    <section class="account-section">
+      <h2>My files</h2>
+      <% if (files.length) { %>
+        <div class="account-table-wrap">
+          <table>
+            <thead><tr><th>File</th><th>Size</th><th>Expires</th><th>Actions</th></tr></thead>
+            <tbody>
+              <% files.forEach((file) => { %>
+                <tr>
+                  <td><a href="/<%= encodeURIComponent(file.filename) %>"><%= file.filename %></a></td>
+                  <td><%= file.length %> bytes</td>
+                  <td><%= file.metadata && file.metadata.expiresAt ? file.metadata.expiresAt.toISOString() : 'Permanent' %></td>
+                  <td>
+                    <form action="/account/files/<%= file._id %>/delete" method="post" onsubmit="return confirm('Delete this file permanently?')">
+                      <button type="submit">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <% if (filePages > 1) { %>
+          <nav class="account-pagination" aria-label="File pages">
+            <% if (filePage > 1) { %><a href="/account?filesPage=<%= filePage - 1 %>">Previous</a><% } %>
+            <span>Page <%= filePage %> of <%= filePages %></span>
+            <% if (filePage < filePages) { %><a href="/account?filesPage=<%= filePage + 1 %>">Next</a><% } %>
+          </nav>
+        <% } %>
+      <% } else { %>
+        <p class="account-status">No files uploaded from this account yet.</p>
+      <% } %>
+    </section>
+
+    <form action="/logout" method="post"><button type="submit">Sign out</button></form>
+  </main>
+</body>
+</html>
