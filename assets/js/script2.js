@@ -1,49 +1,63 @@
-// Halaman detail file (data.ejs). `url` di-set inline di data.ejs sebelum
-// file ini di-load: const url = '/<%= filename %>';
+const dropArea = document.getElementById('drop-area');
+const uploadForm = document.querySelector('.upload-box form');
+const fileInput = document.getElementById('input');
+const uploadButton = document.getElementById('upload');
+const expirationSelect = document.getElementById('expiresIn');
+const permanentHelp = document.getElementById('permanent-help');
+const uploading = document.getElementById('uploading');
 
-function copyLink(link) {
-  // Trik copy-to-clipboard versi lama pakai textarea sementara + execCommand.
-  const tempInput = document.createElement('textarea');
-  tempInput.value = link;
-  document.body.appendChild(tempInput);
-  tempInput.select();
-  document.execCommand('copy');
-  document.body.removeChild(tempInput);
+function getPermanentAccessPath() {
+  if (uploadForm.dataset.authenticated !== 'true') return '/login?next=permanent';
+  if (uploadForm.dataset.permanentEnabled !== 'true') return '/account?payment=required';
+  return null;
+}
 
-  if (document.queryCommandSupported('copy')) {
-    const notif = document.createElement('div');
-    notif.className = 'notification';
-    notif.textContent = 'Link telah berhasil disalin ke clipboard.';
-    document.body.appendChild(notif);
-    setTimeout(() => {
-      notif.style.display = 'none';
-    }, 2000);
-  } else {
-    alert('Salin link secara manual: ' + link);
+function updatePermanentHelp() {
+  permanentHelp.hidden = expirationSelect.value !== 'never';
+}
+
+function beginUpload(files) {
+  if (!files || files.length === 0) return;
+
+  const accessPath = expirationSelect.value === 'never' ? getPermanentAccessPath() : null;
+  if (accessPath) {
+    window.location.assign(accessPath);
+    return;
   }
+
+  fileInput.files = files;
+  uploadForm.submit();
+  uploading.style.display = 'block';
 }
 
-const uploadArea = document.getElementById('uploadArea');
-const filePreview = document.getElementById('filePreview');
-const fileExtension = url.split('.').pop().toLowerCase();
+uploadButton.addEventListener('click', (event) => {
+  event.preventDefault();
+  const accessPath = expirationSelect.value === 'never' ? getPermanentAccessPath() : null;
+  if (accessPath) {
+    window.location.assign(accessPath);
+    return;
+  }
+  fileInput.click();
+});
 
-const PREVIEW_WIDTH = 150;
+fileInput.addEventListener('change', () => {
+  beginUpload(fileInput.files);
+});
 
-if (fileExtension === 'mp4') {
-  const video = document.createElement('video');
-  video.src = url;
-  video.width = PREVIEW_WIDTH;
-  video.controls = true;
-  filePreview.appendChild(video);
-} else if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(fileExtension)) {
-  const image = document.createElement('img');
-  image.src = url;
-  image.width = PREVIEW_WIDTH;
-  filePreview.appendChild(image);
-} else {
-  // Fallback ikon generik kalau tipe file gak dikenali buat preview
-  const customImage = document.createElement('img');
-  customImage.src = 'https://telegra.ph/file/8acbc9aa6ef4a64595c24.jpg';
-  customImage.width = PREVIEW_WIDTH;
-  filePreview.appendChild(customImage);
-}
+expirationSelect.addEventListener('change', updatePermanentHelp);
+updatePermanentHelp();
+
+dropArea.addEventListener('dragover', (event) => {
+  event.preventDefault();
+  dropArea.classList.add('dragover');
+});
+
+dropArea.addEventListener('dragleave', () => {
+  dropArea.classList.remove('dragover');
+});
+
+dropArea.addEventListener('drop', (event) => {
+  event.preventDefault();
+  dropArea.classList.remove('dragover');
+  beginUpload(event.dataTransfer.files);
+});
