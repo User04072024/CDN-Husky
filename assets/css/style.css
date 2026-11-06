@@ -1,0 +1,362 @@
+:root {
+  color-scheme: dark;
+  --night: #10132f;
+  --panel: #151632;
+  --panel-border: #8c57c5;
+  --neon: #8cff9b;
+  --lavender: #d7c8fa;
+  --muted: #b7b4d2;
+  --pixel-shadow: #070916;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  margin: 0;
+  background: var(--night) url("../img/bg.gif") no-repeat center / cover fixed;
+  color: #f5f2ff;
+  font-family: "Courier New", monospace;
+  line-height: 1.6;
+}
+
+body::before {
+  position: fixed;
+  z-index: 0;
+  background: rgba(8, 10, 28, 0.62);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+}
+
+.header,
+.main,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  padding: 1.25rem 1rem;
+  border-bottom: 2px solid var(--panel-border);
+  background: rgba(16, 17, 45, 0.95);
+  box-shadow: 0 4px 0 rgba(7, 9, 22, 0.8);
+  color: var(--neon);
+  text-align: center;
+}
+
+.header__logo {
+  font-size: clamp(1.2rem, 5vw, 1.65rem);
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(140, 255, 155, 0.28);
+}
+
+.main {
+  width: min(100% - 2rem, 56rem);
+  flex: 1;
+  margin: 2rem auto;
+  padding: clamp(1.25rem, 5vw, 2.5rem);
+  border: 2px solid var(--panel-border);
+  background: rgba(16, 17, 45, 0.96);
+  box-shadow: 8px 8px 0 var(--pixel-shadow), 0 0 28px rgba(140, 87, 197, 0.3);
+}
+
+.section__title,
+.endpoint__title,
+.parameters__title,
+.responses__title,
+.errors__title,
+.example__title {
+  color: var(--neon);
+  line-height: 1.35;
+  text-shadow: 0 0 10px rgba(140, 255, 155, 0.16);
+}
+
+.section__title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.45rem, 5vw, 1.8rem);
+}
+
+.section__description {
+  margin: 0 0 1.75rem;
+  color: var(--lavender);
+}
+
+.section__endpoint,
+.section__parameters,
+.section__responses,
+.section__errors,
+.section__example {
+  margin-top: 1.75rem;
+}
+
+.endpoint__title,
+.parameters__title,
+.responses__title,
+.errors__title,
+.example__title {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.05rem, 4vw, 1.3rem);
+}
+
+.parameters__list {
+  padding-left: 1.5rem;
+  color: #f5f2ff;
+}
+
+.parameters__item code,
+.endpoint__code,
+.responses__code,
+.errors__code {
+  display: inline-block;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(140, 87, 197, 0.75);
+  background: #101126;
+  color: var(--neon);
+  font: 700 0.9rem/1.5 "Courier New", monospace;
+}
+
+.responses__code,
+.errors__code {
+  margin: 0.5rem 0;
+}
+
+.responses__body,
+.errors__body,
+.code-container pre {
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 0.5rem 0 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(140, 87, 197, 0.5);
+  background: #0c0d22 !important;
+  color: #e4def5;
+  font: 0.85rem/1.65 "Courier New", monospace;
+  tab-size: 2;
+}
+
+.responses__body code,
+.errors__body code {
+  color: inherit;
+  white-space: pre;
+}
+
+.code-container {
+  position: relative;
+  padding-top: 2.75rem;
+  border: 1px solid rgba(140, 87, 197, 0.5);
+  background: #0c0d22;
+}
+
+.code-container pre {
+  margin: 0;
+  border: 0;
+}
+
+.code-container code {
+  color: #e4def5;
+  font-family: "Courier New", monospace;
+  text-shadow: none;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #8f91a9;
+}
+
+.token.punctuation,
+.token.operator {
+  color: #d7c8fa;
+}
+
+.token.keyword,
+.token.atrule {
+  color: #c99cff;
+}
+
+.token.string,
+.token.attr-value {
+  color: var(--neon);
+}
+
+.token.function,
+.token.number,
+.token.boolean {
+  color: #ffd27d;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--neon);
+  background: #171a39;
+  color: var(--neon);
+  cursor: pointer;
+  font: 700 0.8rem "Courier New", monospace;
+}
+
+.copy-btn:hover {
+  background: var(--neon);
+  color: #10132a;
+}
+
+.copy-btn:focus-visible,
+.footer__link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.footer {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-top: 1px solid rgba(140, 87, 197, 0.55);
+  background: rgba(10, 11, 31, 0.94);
+  color: var(--muted);
+  text-align: center;
+}
+
+.footer__text {
+  margin: 0;
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.footer__link {
+  color: var(--neon);
+  text-decoration: none;
+}
+
+.footer__link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.admin-toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.admin-toolbar form {
+  margin: 0;
+}
+
+.admin-main {
+  width: min(100% - 2rem, 80rem);
+}
+
+.admin-section + .admin-section {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(140, 87, 197, 0.55);
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.admin-table-wrap th,
+.admin-table-wrap td {
+  min-width: 6rem;
+  padding: 0.65rem;
+  border: 1px solid rgba(140, 87, 197, 0.45);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.admin-table-wrap th {
+  color: var(--neon);
+}
+
+.admin-table-wrap a {
+  color: var(--lavender);
+}
+
+.admin-table-wrap button,
+.admin-toolbar button {
+  position: static;
+  margin: 0.15rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--neon);
+  background: #171a39;
+  color: var(--neon);
+  cursor: pointer;
+  font: 700 0.75rem "Courier New", monospace;
+}
+
+.admin-table-wrap button:hover,
+.admin-toolbar button:hover {
+  background: var(--neon);
+  color: #10132a;
+}
+
+.admin-actions {
+  min-width: 12rem;
+}
+
+.admin-actions form {
+  display: inline-block;
+  margin: 0.15rem;
+}
+
+.admin-pagination,
+.account-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.admin-pagination a,
+.account-pagination a {
+  color: var(--neon);
+}
+
+@media (max-width: 480px) {
+  .main {
+    width: calc(100% - 1.25rem);
+    margin: 1rem auto;
+    padding: 1.1rem;
+  }
+
+  .responses__body,
+  .errors__body,
+  .code-container pre {
+    padding: 0.75rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
