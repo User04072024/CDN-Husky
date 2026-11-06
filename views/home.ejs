@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Home | Husky_dev CDN</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description"
+    content="Upload files to Husky_dev CDN with selectable expiration times or permanent storage.">
+  <meta name="author" content="Husky_dev">
+  <meta name="keywords"
+    content="Husky_dev CDN, CDN, CDN Free, Xyra, Hosting Media">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#10132f">
+  <meta name="copyright" content="Husky_dev">
+  <meta property="og:site_name" content="Husky_dev CDN" />
+  <meta property="og:title" content="Hosting Media | Husky_dev CDN">
+  <meta property="og:description"
+    content="Upload files to Husky_dev CDN with selectable expiration times or permanent storage.">
+  <meta property="og:image" content="https://i.ibb.co/TxPSwNjX/favicon.jpg">
+  <meta property="og:url" content="https://cdn.huskydev.space">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Nexon_CDN">
+  <meta name="twitter:title" content="Hosting Media | Husky_dev CDN">
+  <meta name="twitter:description"
+    content="Upload files to Husky_dev CDN with selectable expiration times or permanent storage.">
+  <meta name="twitter:image" content="https://i.ibb.co/TxPSwNjX/favicon.jpg">
+  <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../assets/css/style2.css">
+</head>
+
+<body>
+  <div class="upload-area" id="drop-area">
+    <h1>Husky_dev CDN | Hosting Media</h1>
+    <% if (user) { %>
+      <p class="account-status">Signed in as <b><%= user.email %></b> · <a href="/account">My account</a></p>
+    <% } %>
+    <h3>Drag & Drop files here</h3>
+    <div class="upload-box">
+      <form
+        action="/upload"
+        method="post"
+        enctype="multipart/form-data"
+        data-authenticated="<%= user ? 'true' : 'false' %>"
+        data-permanent-enabled="<%= canUploadPermanent ? 'true' : 'false' %>">
+        <label class="expiration-label" for="expiresIn">File lifetime</label>
+        <select id="expiresIn" name="expiresIn" class="expiration-select">
+          <% Object.entries(expirationOptions).forEach(([value, option]) => { %>
+            <option value="<%= value %>" <%= value === selectedExpiration ? 'selected' : '' %>>
+              <%= value === 'never' ? '👑 Permanent — $5/month' : option.label %>
+            </option>
+          <% }) %>
+        </select>
+        <p id="permanent-help" class="permanent-help" hidden>
+          <% if (!user) { %>
+            Permanent storage requires an account and an active plan.
+            <a href="/login?next=permanent">Sign in</a> or
+            <a href="/register?next=permanent">create an account</a>.
+          <% } else if (!canUploadPermanent) { %>
+            Permanent storage requires an active plan.
+            <a href="/account?payment=required">Request access</a>.
+          <% } %>
+        </p>
+        <button id="upload" class="upload-btn" type="button">Choose File</button>
+        <input type="file" name="file" id="input" style="display: none;">
+      </form>
+      <div id="uploading" class="uploading">Uploading...</div>
+    </div>
+  </div>
+  <footer>
+    &copy; 2026 Husky_dev CDN. All rights reserved. | API <a href="/docs"><b>Docs</b></a>
+  </footer>
+  <script src="../assets/js/script.js"></script>
+</body>
+
+</html>
