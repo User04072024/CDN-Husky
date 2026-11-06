@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10132f">
+  <title>Admin dashboard | Husky_dev CDN</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header__logo">Husky_dev CDN · Admin</div>
+    <div class="admin-toolbar">
+      <span><%= adminEmail %></span>
+      <form action="/logout" method="post"><button class="copy-btn" type="submit">Sign out</button></form>
+    </div>
+  </header>
+
+  <main class="main admin-main">
+    <section class="admin-section">
+      <h1 class="section__title">Payment requests</h1>
+      <% if (requests.length) { %>
+        <div class="admin-table-wrap">
+          <table>
+            <thead><tr><th>Account</th><th>Amount</th><th>Requested</th><th>Actions</th></tr></thead>
+            <tbody>
+              <% requests.forEach((request) => { %>
+                <tr>
+                  <td><%= request.email %></td>
+                  <td>$<%= (request.amountCents / 100).toFixed(2) %> <%= request.currency %>/month</td>
+                  <td><%= request.createdAt.toISOString() %></td>
+                  <td class="admin-actions">
+                    <form action="/admin/payment-requests/<%= request._id %>/approve" method="post">
+                      <button type="submit">Confirm payment · grant 30 days</button>
+                    </form>
+                    <form action="/admin/payment-requests/<%= request._id %>/reject" method="post">
+                      <button type="submit">Reject</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %><p class="section__description">No pending payment requests.</p><% } %>
+      <% if (requestsPages > 1) { %>
+        <nav class="admin-pagination" aria-label="Payment request pages">
+          <% if (requestsPage > 1) { %><a href="/admin?requestsPage=<%= requestsPage - 1 %>">Previous requests</a><% } %>
+          <span>Page <%= requestsPage %> of <%= requestsPages %></span>
+          <% if (requestsPage < requestsPages) { %><a href="/admin?requestsPage=<%= requestsPage + 1 %>">Next requests</a><% } %>
+        </nav>
+      <% } %>
+    </section>
+
+    <section class="admin-section">
+      <h2 class="section__title">Accounts</h2>
+      <div class="admin-table-wrap">
+        <table>
+          <thead><tr><th>Email</th><th>Created</th><th>Storage</th><th>Permission</th><th>API</th><th>Actions</th></tr></thead>
+          <tbody>
+            <% users.forEach((user) => { %>
+              <tr>
+                <td><%= user.email %><%= user.disabled ? ' · DISABLED' : '' %></td>
+                <td><%= user.createdAt.toISOString() %></td>
+                <td><%= ((user.storageBytes || 0) / (1024 * 1024 * 1024)).toFixed(2) %> / 100 GB</td>
+                <td><%= user.paidUntil && user.paidUntil > now ? `Active until ${user.paidUntil.toISOString()}` : 'Inactive' %></td>
+                <td><%= user.apiKeyPrefix ? `${user.apiKeyPrefix}…` : 'None' %></td>
+                <td class="admin-actions">
+                  <form action="/admin/users/<%= user._id %>/grant" method="post">
+                    <button type="submit">Grant 30 days</button>
+                  </form>
+                  <form action="/admin/users/<%= user._id %>/revoke" method="post">
+                    <button type="submit">Revoke permission</button>
+                  </form>
+                  <% if (user.apiKeyPrefix) { %>
+                    <form action="/admin/users/<%= user._id %>/api-key/revoke" method="post">
+                      <button type="submit">Revoke API key</button>
+                    </form>
+                  <% } %>
+                  <form action="/admin/users/<%= user._id %>/toggle-disabled" method="post">
+                    <button type="submit"><%= user.disabled ? 'Enable account' : 'Disable account' %></button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% if (accountsPages > 1) { %>
+        <nav class="admin-pagination" aria-label="Account pages">
+          <% if (accountsPage > 1) { %><a href="/admin?accountsPage=<%= accountsPage - 1 %>">Previous accounts</a><% } %>
+          <span>Page <%= accountsPage %> of <%= accountsPages %></span>
+          <% if (accountsPage < accountsPages) { %><a href="/admin?accountsPage=<%= accountsPage + 1 %>">Next accounts</a><% } %>
+        </nav>
+      <% } %>
+    </section>
+
+    <section class="admin-section">
+      <h2 class="section__title">Files</h2>
+      <div class="admin-table-wrap">
+        <table>
+          <thead><tr><th>Filename</th><th>Owner</th><th>Size</th><th>Uploaded</th><th>Expires</th><th>Actions</th></tr></thead>
+          <tbody>
+            <% files.forEach((file) => { const ownerId = file.metadata && file.metadata.ownerId ? file.metadata.ownerId.toString() : ''; const owner = ownerById.get(ownerId); %>
+              <tr>
+                <td><a href="/<%= encodeURIComponent(file.filename) %>"><%= file.filename %></a></td>
+                <td><%= owner ? owner.email : 'Anonymous / legacy' %></td>
+                <td><%= formatFileSize(file.length) %></td>
+                <td><%= file.uploadDate.toISOString() %></td>
+                <td><%= file.metadata && file.metadata.expiresAt ? file.metadata.expiresAt.toISOString() : 'Permanent' %></td>
+                <td>
+                  <form action="/admin/files/<%= file._id %>/delete" method="post" onsubmit="return confirm('Delete this file permanently?')">
+                    <button type="submit">Delete file</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% if (filesPages > 1) { %>
+        <nav class="admin-pagination" aria-label="File pages">
+          <% if (filesPage > 1) { %><a href="/admin?filesPage=<%= filesPage - 1 %>">Previous files</a><% } %>
+          <span>Page <%= filesPage %> of <%= filesPages %></span>
+          <% if (filesPage < filesPages) { %><a href="/admin?filesPage=<%= filesPage + 1 %>">Next files</a><% } %>
+        </nav>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>
