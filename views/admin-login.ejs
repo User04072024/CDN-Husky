@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10132f">
+  <title>Admin sign in | Husky_dev CDN</title>
+  <link rel="stylesheet" href="/assets/css/style2.css">
+</head>
+<body>
+  <main class="upload-area auth-area">
+    <h1>Admin sign in</h1>
+    <% if (error) { %><p class="form-message form-message--error"><%= error %></p><% } %>
+    <% if (sent) { %>
+      <p class="account-status">If the address is authorized, a one-time sign-in link has been sent. It expires in 15 minutes.</p>
+    <% } else if (token) { %>
+      <p class="account-status">Confirm this one-time admin sign-in link.</p>
+      <form action="/admin/verify" method="post" class="auth-form">
+        <input type="hidden" name="token" value="<%= token %>">
+        <button class="upload-btn" type="submit">Sign in to admin</button>
+      </form>
+    <% } else { %>
+      <form action="/admin/login" method="post" class="auth-form">
+        <label for="email">Admin email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required>
+        <button class="upload-btn" type="submit">Email sign-in link</button>
+      </form>
+    <% } %>
+    <p><a class="account-link" href="/">Back to home</a></p>
+  </main>
+</body>
+</html>
