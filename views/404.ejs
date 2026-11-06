@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>ERROR | Husky_dev - CDN</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10132f">
+  <link rel="icon" type="image/x-icon" href="../assets/img/favicon.ico" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    body {
+      position: relative;
+      display: grid;
+      min-height: 100%;
+      place-items: center;
+      margin: 0;
+      padding: 1.5rem;
+      background: #10132f url("../assets/img/bg.gif") no-repeat center / cover fixed;
+      color: #f5f2ff;
+      font-family: "Courier New", monospace;
+    }
+
+    body::before {
+      position: fixed;
+      background: rgba(8, 10, 28, 0.56);
+      content: "";
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .error-card {
+      position: relative;
+      width: min(100%, 30rem);
+      padding: clamp(1.5rem, 6vw, 2.5rem);
+      border: 2px solid #8c57c5;
+      background: rgba(16, 17, 45, 0.95);
+      box-shadow: 8px 8px 0 #070916, 0 0 28px rgba(140, 87, 197, 0.3);
+      text-align: center;
+    }
+
+    .error-code {
+      display: inline-block;
+      margin: 0 0 1rem;
+      color: #8cff9b;
+      font-size: clamp(3rem, 15vw, 5rem);
+      font-weight: 700;
+      line-height: 1;
+      text-shadow: 0 0 14px rgba(140, 255, 155, 0.35);
+    }
+
+    .error-message {
+      margin: 0 0 1.75rem;
+      color: #d7c8fa;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .home-link {
+      display: inline-block;
+      padding: 0.8rem 1.1rem;
+      border: 2px solid #8cff9b;
+      background: #8cff9b;
+      box-shadow: 4px 4px 0 #49306b;
+      color: #10132a;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    .home-link:hover {
+      transform: translate(2px, 2px);
+      background: #b2ffb9;
+      box-shadow: 2px 2px 0 #49306b;
+    }
+
+    .home-link:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 4px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .home-link {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="error-card">
+    <h1 class="error-code">404</h1>
+    <p class="error-message">This page could not be found.</p>
+    <a class="home-link" href="/">Return to home</a>
+  </main>
+</body>
+
+</html>
