@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10132f">
+  <title>Create account | Husky_dev CDN</title>
+  <link rel="stylesheet" href="/assets/css/style2.css">
+</head>
+<body>
+  <main class="upload-area auth-area">
+    <h1>Create account</h1>
+    <p class="account-status">A free account is only needed for permanent storage.</p>
+    <% if (error) { %><p class="form-message form-message--error"><%= error %></p><% } %>
+    <form action="/register" method="post" class="auth-form">
+      <input type="hidden" name="next" value="<%= next %>">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+      <small>Use at least 12 characters.</small>
+      <button class="upload-btn" type="submit">Create account</button>
+    </form>
+    <p class="account-status">Already registered? <a href="/login<%= next ? '?next=permanent' : '' %>">Sign in</a></p>
+  </main>
+</body>
+</html>
