@@ -16,5 +16,5 @@ new_sqlite_classes = ["UsageCounter"]
 
 [vars]
 APP_USAGE_URL = "https://cdn.huskydev.space/api/r2/usage-event"
-CLASS_B_BASELINE = "0"
-CLASS_B_BASELINE_MONTH = "SET_FROM_CLOUDFLARE_ANALYTICS"
+CLASS_B_BASELINE = "16"
+CLASS_B_BASELINE_MONTH = "2026-11"
