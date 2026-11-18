@@ -38,9 +38,6 @@
     <h3>Drag & Drop files here</h3>
     <div class="upload-box">
       <form
-        action="/upload"
-        method="post"
-        enctype="multipart/form-data"
         data-authenticated="<%= user ? 'true' : 'false' %>"
         data-permanent-enabled="<%= canUploadPermanent ? 'true' : 'false' %>">
         <label class="expiration-label" for="expiresIn">File lifetime</label>
@@ -64,7 +61,10 @@
         <button id="upload" class="upload-btn" type="button">Choose File</button>
         <input type="file" name="file" id="input" style="display: none;">
       </form>
-      <div id="uploading" class="uploading">Uploading...</div>
+      <div id="uploading" class="uploading">
+        <span id="upload-status">Preparing upload...</span>
+        <progress id="upload-progress" max="100" value="0" hidden></progress>
+      </div>
     </div>
   </div>
   <footer>

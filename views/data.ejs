@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <meta charset="UTF-8">
   <title>Data | Husky_dev CDN</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description"
@@ -31,17 +32,21 @@
 <body>
   <div class="upload-area" id="uploadArea">
     <h1>File Actions</h1>
+    <p class="expiry-info"><%= filename %></p>
     <div id="filePreview"></div><br>
     <p class="expiry-info">
       <%= expiresAt ? `Expires: ${expiresAt}` : 'This file is permanent.' %>
     </p>
-    <button onclick="copyLink(this.dataset.link)" data-link="<%= baseUrl %>/<%= filename %>">Copy Link</button>
-    <button onclick="window.open('/<%= encodeURIComponent(filename) %>/')">Open file</button>
+    <button onclick="copyLink(this.dataset.link)" data-link="<%= fileUrl %>">Copy Link</button>
+    <button onclick="window.open(url, '_blank', 'noopener')">Open file</button>
   </div>
   <footer>
     &copy; 2026 Husky_dev CDN. All rights reserved. by <a href="https://github.com/Husky_dev"><b>Husky_dev</b></a>
   </footer>
-  <script>const url = <%- JSON.stringify(`/${filename}`) %>;</script>
+  <script>
+    const url = <%- JSON.stringify(fileUrl) %>;
+    const contentType = <%- JSON.stringify(type || 'application/octet-stream') %>;
+  </script>
   <script src="/assets/js/data.js"></script>
 </body>
 

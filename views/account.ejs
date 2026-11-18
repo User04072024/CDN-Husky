@@ -77,7 +77,7 @@
             <tbody>
               <% files.forEach((file) => { %>
                 <tr>
-                  <td><a href="/<%= encodeURIComponent(file.filename) %>"><%= file.filename %></a></td>
+                  <td><a href="<%= file.downloadUrl || `/${encodeURIComponent(file.filename)}` %>"><%= file.originalFilename || file.filename %></a></td>
                   <td><%= file.length %> bytes</td>
                   <td><%= file.metadata && file.metadata.expiresAt ? file.metadata.expiresAt.toISOString() : 'Permanent' %></td>
                   <td>

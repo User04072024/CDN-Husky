@@ -18,6 +18,19 @@
 
   <main class="main admin-main">
     <section class="admin-section">
+      <h1 class="section__title">R2 usage guard</h1>
+      <p class="section__description">
+        Storage: <%= (r2Usage.storageBytes / 1e9).toFixed(2) %> / <%= (r2StorageLimitBytes / 1e9).toFixed(1) %> GB
+        · estimated Class A: <%= r2Usage.classAEstimate.toLocaleString() %> / <%= r2ClassALimit.toLocaleString() %>
+        · Worker Class B: <%= r2Usage.classB.toLocaleString() %> / <%= r2ClassBLimit.toLocaleString() %>
+      </p>
+      <p class="section__description">
+        Alerts start at 90%; new uploads and Worker-served downloads stop at 95%.
+        Class A is a conservative estimate based on authorized uploads.
+      </p>
+    </section>
+
+    <section class="admin-section">
       <h1 class="section__title">Payment requests</h1>
       <% if (requests.length) { %>
         <div class="admin-table-wrap">
@@ -103,12 +116,22 @@
           <tbody>
             <% files.forEach((file) => { const ownerId = file.metadata && file.metadata.ownerId ? file.metadata.ownerId.toString() : ''; const owner = ownerById.get(ownerId); %>
               <tr>
-                <td><a href="/<%= encodeURIComponent(file.filename) %>"><%= file.filename %></a></td>
+                <td><a href="<%= file.downloadUrl || `/${encodeURIComponent(file.filename)}` %>"><%= file.originalFilename || file.filename %></a></td>
                 <td><%= owner ? owner.email : 'Anonymous / legacy' %></td>
                 <td><%= formatFileSize(file.length) %></td>
                 <td><%= file.uploadDate.toISOString() %></td>
                 <td><%= file.metadata && file.metadata.expiresAt ? file.metadata.expiresAt.toISOString() : 'Permanent' %></td>
                 <td>
+                  <form action="/admin/files/<%= file._id %>/expiration" method="post">
+                    <label class="sr-only" for="lifetime-<%= file._id %>">Change lifetime for <%= file.originalFilename || file.filename %></label>
+                    <select id="lifetime-<%= file._id %>" name="expiresIn">
+                      <option value="" disabled selected>Choose lifetime...</option>
+                      <% Object.entries(expirationOptions).forEach(([value, option]) => { %>
+                        <option value="<%= value %>"><%= option.label %></option>
+                      <% }) %>
+                    </select>
+                    <button type="submit">Set lifetime</button>
+                  </form>
                   <form action="/admin/files/<%= file._id %>/delete" method="post" onsubmit="return confirm('Delete this file permanently?')">
                     <button type="submit">Delete file</button>
                   </form>
