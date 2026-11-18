@@ -172,6 +172,33 @@ footer {
   border: 1px solid rgba(140, 87, 197, 0.65);
 }
 
+.file-type-card {
+  display: flex;
+  width: min(100%, 12rem);
+  min-height: 9rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 auto 0.75rem;
+  border: 1px solid rgba(140, 87, 197, 0.65);
+  background: linear-gradient(145deg, #1d2048, #11132f);
+  color: var(--lavender);
+}
+
+.file-type-icon {
+  color: var(--neon);
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.file-type-label {
+  max-width: 90%;
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
 .expiry-info {
   color: var(--lavender);
   font-size: 0.85rem;
@@ -342,10 +369,19 @@ footer {
 
 .uploading {
   display: none;
+  width: 100%;
   margin-top: 1.25rem;
   color: var(--neon);
   font-size: 0.85rem;
   animation: blink 1s steps(2, start) infinite;
+}
+
+.uploading progress {
+  display: block;
+  width: min(100%, 22rem);
+  height: 0.75rem;
+  margin: 0.75rem auto 0;
+  accent-color: var(--neon);
 }
 
 @keyframes blink {

@@ -305,6 +305,25 @@ body::before {
   font: 700 0.75rem "Courier New", monospace;
 }
 
+.admin-table-wrap select {
+  max-width: 10rem;
+  padding: 0.45rem;
+  border: 1px solid var(--panel-border);
+  background: #101126;
+  color: #f5f2ff;
+  font: 0.75rem "Courier New", monospace;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
 .admin-table-wrap button:hover,
 .admin-toolbar button:hover {
   background: var(--neon);
